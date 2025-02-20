@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fragment_"
+        android:enabled="true"
+        android:icon="@drawable/baseline_table_rows_24"
+        android:title="@string/timeline"/>
+
+    <item
+        android:id="@+id/fragment_contacts"
+        android:enabled="true"
+        android:icon="@drawable/baseline_favorite_24"
+        android:title="@string/favorites"/>
+
+    <item
+        android:id="@+id/fragment_contacts"
+        android:enabled="true"
+        android:icon="@drawable/baseline_favorite_24"
+        android:title="@string/favorites"/>
+</menu>

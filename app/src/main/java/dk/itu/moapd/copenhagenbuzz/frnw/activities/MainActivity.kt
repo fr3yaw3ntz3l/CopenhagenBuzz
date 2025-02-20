@@ -14,9 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
 import dk.itu.moapd.copenhagenbuzz.frnw.R
 import android.content.Intent
 import androidx.appcompat.content.res.AppCompatResources
@@ -37,9 +35,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val TAG = MainActivity::class.qualifiedName
     }
-
-    // An instance of the `Event ` class.
-    private val event: Event = Event("", "", "", "", "", "")
 
     private var isLoggedIn: Boolean = false
 
@@ -65,18 +60,6 @@ class MainActivity : AppCompatActivity() {
         // Retrieve login status
         isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
 
-        with(binding.contentMain) {
-
-            fabAddEvent.setOnClickListener {
-                // Only execute the following code when the user fills all `EditText `.
-                if (editTextEventName.text.toString().isNotEmpty() &&
-                    editTextEventLocation.text.toString().isNotEmpty() &&
-                    editTextEventDate.text.toString().isNotEmpty() &&
-                    editTextEventType.text.toString().isNotEmpty() &&
-                    editTextEventDescription.text.toString().isNotEmpty()
-                ) showMessage()
-            }
-        }
     }
 
     /**
@@ -129,15 +112,6 @@ class MainActivity : AppCompatActivity() {
             menuItem.title = "Login"
             menuItem.icon = AppCompatResources.getDrawable(this, R.drawable.baseline_account_circle_24)
         }
-    }
-
-    /**
-     * Displays a Snackbar message at the bottom of the screen with event details.
-     */
-
-    private fun showMessage() {
-        val message = "Event added using\n$event"
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 }
 
