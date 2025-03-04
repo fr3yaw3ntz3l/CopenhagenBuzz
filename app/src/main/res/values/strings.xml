@@ -22,4 +22,7 @@
     <string name="timeline">Timeline</string>
     <string name="favorites">Favorites</string>
     <string name="map">Map</string>
+    <string name="edit">Edit</string>
+    <string name="info">Info\n</string>
+    <string name="event_image">Event image</string>
 </resources>
