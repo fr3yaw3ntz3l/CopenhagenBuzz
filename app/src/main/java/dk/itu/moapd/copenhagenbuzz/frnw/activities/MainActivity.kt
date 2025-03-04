@@ -18,6 +18,8 @@ import dk.itu.moapd.copenhagenbuzz.frnw.databinding.ActivityMainBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.R
 import android.content.Intent
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 
 
 /**
@@ -54,11 +56,20 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Find NavHostFragment and NavController
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(
+                R.id.fragment_container_view) as NavHostFragment
+        val navController = navHostFragment.navController
+
         // Set up the toolbar
         setSupportActionBar(binding.topAppBar)
 
         // Retrieve login status
         isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
+
+
+        binding.contentMain.bottomNavigation.setupWithNavController(navController)
 
     }
 

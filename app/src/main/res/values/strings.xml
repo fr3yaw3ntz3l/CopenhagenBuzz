@@ -21,4 +21,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="timeline">Timeline</string>
     <string name="favorites">Favorites</string>
+    <string name="map">Map</string>
 </resources>
