@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.github.javafaker.Faker
 
 class DataViewModel : ViewModel() {
     private val _events = MutableLiveData<List<Event>>()
@@ -21,7 +22,6 @@ class DataViewModel : ViewModel() {
         }
     }
 
-    // Method to generate mock event data using Faker library
     private fun generateMockEvents(): List<Event> {
         val faker = Faker()
         val eventsList = mutableListOf<Event>()
@@ -30,10 +30,10 @@ class DataViewModel : ViewModel() {
         for (i in 1..10) {
             eventsList.add(
                 Event(
-                    eventName = faker.event().name(),
+                    eventName = faker.book().title(),
                     eventLocation = faker.address().city(),
                     eventDate = faker.date().future(30, java.util.concurrent.TimeUnit.DAYS).toString(),
-                    eventType = faker.event().eventType(),
+                    eventType = faker.music().genre(),
                     eventPhotoUrl = "https://via.placeholder.com/150",
                     eventDescription = faker.lorem().sentence()
                 )
@@ -43,3 +43,6 @@ class DataViewModel : ViewModel() {
         return eventsList
     }
 }
+
+
+

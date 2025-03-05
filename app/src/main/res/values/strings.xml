@@ -23,6 +23,6 @@
     <string name="favorites">Favorites</string>
     <string name="map">Map</string>
     <string name="edit">Edit</string>
-    <string name="info">Info\n</string>
+    <string name="info">Info</string>
     <string name="event_image">Event image</string>
 </resources>

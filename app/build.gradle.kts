@@ -50,8 +50,11 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
     implementation(libs.play.services.maps)
-    testImplementation(libs.junit)
+    implementation(libs.javafaker)
+    implementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.picasso)
+
 
 }
