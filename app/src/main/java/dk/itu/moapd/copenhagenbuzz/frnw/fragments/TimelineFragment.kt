@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dk.itu.moapd.copenhagenbuzz.frnw.R
+import dk.itu.moapd.copenhagenbuzz.frnw.adapter.EventAdapter
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentTimelineBinding
+import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
+import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,6 +30,10 @@ class TimelineFragment : Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
+    // Initialize the ViewModel using viewModels(
+    private val dataViewModel: DataViewModel by viewModels()
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +43,16 @@ class TimelineFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Observe the events LiveData and update the ListView when data changes
+        dataViewModel.events.observe(viewLifecycleOwner) { events ->
+            val adapter = EventAdapter(requireContext(), ArrayList(events))
+            binding.listView.adapter = adapter
+        }
+
+
+        // Fetch events when the fragment is created
+        dataViewModel.fetchEvents()
 
         // Set click listener on the button
         binding.fabAddEvent.setOnClickListener {

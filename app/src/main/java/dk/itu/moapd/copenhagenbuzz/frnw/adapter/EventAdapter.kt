@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 class EventAdapter(
 
     private val context: Context,
-    private val events: List<Event>
+    private val events: ArrayList<Event>
 
 ) : BaseAdapter() {
 
@@ -27,11 +27,11 @@ class EventAdapter(
     class ViewHolder(view: View) {
 
         val eventName: TextView = view.findViewById(R.id.event_name)
-        val eventType: TextView = view.findViewById(R.id.text_field_event_type)
+        val eventType: TextView = view.findViewById(R.id.event_type)
         val eventLocation: TextView = view.findViewById(R.id.event_location)
         val eventDate: TextView = view.findViewById(R.id.event_date)
         val eventDescription: TextView = view.findViewById(R.id.event_description)
-        val eventImage: ImageView = view.findViewById(R.id.event_image)
+        val eventPhoto: ImageView = view.findViewById(R.id.event_photo)
         //val circle: TextView = view.findViewById(R.id.circle_text)
     }
 
@@ -73,7 +73,7 @@ class EventAdapter(
             .load(event.eventPhotoUrl) // URL or resource ID of the photo
             .placeholder(R.drawable.baseline_refresh_24) // Placeholder image while loading
             .error(R.drawable.baseline_image_not_supported_24) // Error image if loading fails
-            .into(viewHolder.eventImage)
+            .into(viewHolder.eventPhoto)
 
         return view
     }

@@ -15,9 +15,7 @@ class DataViewModel : ViewModel() {
     // Method to fetch the event list asynchronously using coroutines
     fun fetchEvents() {
         CoroutineScope(Dispatchers.IO).launch {
-            // Simulating the asynchronous fetching of event data
             val generatedEvents = generateMockEvents()
-            // Post the generated events to the LiveData object
             _events.postValue(generatedEvents)
         }
     }
