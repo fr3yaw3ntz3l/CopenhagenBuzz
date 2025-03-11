@@ -32,7 +32,7 @@ class DataViewModel : ViewModel() {
                     eventLocation = faker.address().city(),
                     eventDate = faker.date().future(30, java.util.concurrent.TimeUnit.DAYS).toString(),
                     eventType = faker.music().genre(),
-                    eventPhotoUrl = "https://via.placeholder.com/150",
+                    eventPhotoUrl = "android.resource://dk.itu.moapd.copenhagenbuzz.frnw/drawable/brat_tour",
                     eventDescription = faker.lorem().sentence()
                 )
             )
@@ -41,6 +41,5 @@ class DataViewModel : ViewModel() {
         return eventsList
     }
 }
-
 
 
