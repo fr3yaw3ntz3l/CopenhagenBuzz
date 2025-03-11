@@ -20,7 +20,7 @@
             app:destination="@id/fragment_add_event" />
         <action
             android:id="@+id/action_fragment_timeline_to_addEventFragment"
-            app:destination="@id/addEventFragment" />
+            app:destination="@id/fragment_add_event" />
     </fragment>
 
     <fragment
@@ -29,8 +29,8 @@
         android:label="@string/favorites"
         tools:layout="@layout/fragment_favorites" >
         <action
-            android:id="@+id/action_fragment_favorites_to_addEventFragment"
-            app:destination="@id/addEventFragment" />
+            android:id="@+id/action_fragment_favorites_to_fragment_add_event"
+            app:destination="@id/fragment_add_event" />
         <action
             android:id="@+id/action_fragment_favorites_to_fragment_timeline"
             app:destination="@id/fragment_timeline" />
@@ -52,18 +52,18 @@
             app:destination="@id/fragment_favorites" />
     </fragment>
     <fragment
-        android:id="@+id/addEventFragment"
+        android:id="@+id/fragment_add_event"
         android:name="dk.itu.moapd.copenhagenbuzz.frnw.fragments.AddEventFragment"
         android:label="fragment_add_event"
         tools:layout="@layout/fragment_add_event" >
         <action
-            android:id="@+id/action_addEventFragment_to_fragment_timeline"
+            android:id="@+id/action_fragment_add_event_to_fragment_timeline"
             app:destination="@id/fragment_timeline" />
         <action
-            android:id="@+id/action_addEventFragment_to_fragment_favorites"
+            android:id="@+id/action_fragment_add_event_to_fragment_favorites"
             app:destination="@id/fragment_favorites" />
         <action
-            android:id="@+id/action_addEventFragment_to_fragment_map"
+            android:id="@+id/action_fragment_add_event_to_fragment_map"
             app:destination="@id/fragment_map" />
     </fragment>
 </navigation>
