@@ -36,11 +36,6 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Set click listener on the button
-        binding.fabAddEvent.setOnClickListener {
-            findNavController().navigate(R.id.action_fragment_favorites_to_addEventFragment)
-        }
     }
 
     override fun onDestroyView() {

@@ -54,10 +54,6 @@ class TimelineFragment : Fragment() {
         // Fetch events when the fragment is created
         dataViewModel.fetchEvents()
 
-        // Set click listener on the button
-        binding.fabAddEvent.setOnClickListener {
-            findNavController().navigate(R.id.action_fragment_timeline_to_addEventFragment)
-        }
     }
 
     override fun onDestroyView() {

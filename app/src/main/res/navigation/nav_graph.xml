@@ -16,6 +16,9 @@
             android:id="@+id/action_fragment_timeline_to_fragment_map"
             app:destination="@id/fragment_map" />
         <action
+            android:id="@id/action_fragment_timeline_to_fragment_add_event"
+            app:destination="@id/fragment_add_event" />
+        <action
             android:id="@+id/action_fragment_timeline_to_addEventFragment"
             app:destination="@id/addEventFragment" />
     </fragment>
@@ -52,5 +55,15 @@
         android:id="@+id/addEventFragment"
         android:name="dk.itu.moapd.copenhagenbuzz.frnw.fragments.AddEventFragment"
         android:label="fragment_add_event"
-        tools:layout="@layout/fragment_add_event" />
+        tools:layout="@layout/fragment_add_event" >
+        <action
+            android:id="@+id/action_addEventFragment_to_fragment_timeline"
+            app:destination="@id/fragment_timeline" />
+        <action
+            android:id="@+id/action_addEventFragment_to_fragment_favorites"
+            app:destination="@id/fragment_favorites" />
+        <action
+            android:id="@+id/action_addEventFragment_to_fragment_map"
+            app:destination="@id/fragment_map" />
+    </fragment>
 </navigation>
