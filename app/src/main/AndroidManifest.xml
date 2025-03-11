@@ -12,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CopenhagenBuzz"
+        android:theme="@style/Base.Theme.CopenhagenBuzz"
+        android:name=".activities.MyApplication"
         tools:targetApi="31">
 
         <!--

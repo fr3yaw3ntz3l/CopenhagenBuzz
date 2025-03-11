@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.CopenhagenBuzz" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/licorice</item>
+        <item name="colorPrimaryVariant">@color/burgundy</item>
+        <item name="colorOnPrimary">@color/lavender_blush</item>
+        <item name="colorSecondary">@color/amaranth_purple</item>
+        <item name="colorOnSecondary">@color/black_bean</item>
     </style>
 </resources>

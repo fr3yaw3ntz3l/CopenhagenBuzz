@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="licorice">#211103</color>
     <color name="black_bean">#3D1308</color>
     <color name="burgundy">#7B0D1E</color>
