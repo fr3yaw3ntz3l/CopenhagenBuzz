@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".activities.MainActivity"
-    android:background="@color/licorice">
+    android:background="@color/lavender_blush">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -15,22 +15,15 @@
         android:id="@+id/top_app_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/burgundy"
+        android:background="@color/amaranth_purple"
         app:title="@string/app_name"
         app:titleTextColor="@android:color/white"
         app:menu="@menu/top_app_bar_menu"
         app:elevation="2dp" />
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
+    
     <include
         android:id="@+id/content_main"
         layout="@layout/content_main" />
 
-    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
