@@ -1,17 +1,18 @@
 package dk.itu.moapd.copenhagenbuzz.frnw.fragments
 
+import android.R
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import dk.itu.moapd.copenhagenbuzz.frnw.R
 import dk.itu.moapd.copenhagenbuzz.frnw.adapter.EventAdapter
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentTimelineBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
-import java.util.ArrayList
+import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,10 +47,13 @@ class TimelineFragment : Fragment() {
 
         // Observe the events LiveData and update the ListView when data changes
         dataViewModel.events.observe(viewLifecycleOwner) { events ->
-            val adapter = EventAdapter(requireContext(), ArrayList(events))
+            val adapter = EventAdapter(requireContext(), ArrayList(events), dataViewModel)
             binding.listView.adapter = adapter
         }
 
+        dataViewModel.favorites.observe(viewLifecycleOwner) {
+            (binding.listView.adapter as? EventAdapter)?.notifyDataSetChanged()
+        }
 
         // Fetch events when the fragment is created
         dataViewModel.fetchEvents()

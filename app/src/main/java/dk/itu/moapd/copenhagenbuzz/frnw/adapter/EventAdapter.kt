@@ -12,12 +12,14 @@ import android.widget.TextView
 import dk.itu.moapd.copenhagenbuzz.frnw.R
 import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
 import com.squareup.picasso.Picasso
+import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
 
 
 class EventAdapter(
 
     private val context: Context,
-    private val events: ArrayList<Event>
+    private val events: ArrayList<Event>,
+    private val dataViewModel: DataViewModel
 
 ) : BaseAdapter() {
 
@@ -33,6 +35,7 @@ class EventAdapter(
         val eventDescription: TextView = view.findViewById(R.id.event_description)
         val eventPhoto: ImageView = view.findViewById(R.id.event_photo)
         //val circle: TextView = view.findViewById(R.id.circle_text)
+        val favoriteIcon: ImageView = view.findViewById(R.id.favorite_icon)
     }
 
     override fun getCount(): Int = events.size
@@ -67,13 +70,27 @@ class EventAdapter(
         viewHolder.eventDescription.text = event.eventDescription
         // viewHolder.circle.text = event.eventType.first().toString()
 
-
         // Use Picasso to load the event photo
         Picasso.get()
             .load(event.eventPhotoUrl) // URL or resource ID of the photo
             .placeholder(R.drawable.baseline_refresh_24) // Placeholder image while loading
             .error(R.drawable.baseline_image_not_supported_24) // Error image if loading fails
             .into(viewHolder.eventPhoto)
+
+        val isFavorite = dataViewModel.favorites.value?.contains(event) == true
+        viewHolder.favoriteIcon.setImageResource(
+            if (isFavorite) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+        )
+
+        viewHolder.favoriteIcon.setOnClickListener {
+            val updatedFavorites = dataViewModel.favorites.value?.toMutableList() ?: mutableListOf()
+            if (isFavorite) {
+                updatedFavorites.remove(event)
+            } else {
+                updatedFavorites.add(event)
+            }
+            dataViewModel.updateFavorites(updatedFavorites)
+        }
 
         return view
     }

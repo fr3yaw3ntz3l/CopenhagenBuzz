@@ -30,5 +30,6 @@ data class Event(
     var eventDate: String,
     val eventType: String,
     var eventDescription: String,
-    var eventPhotoUrl: String
+    var eventPhotoUrl: String,
+    var isFavorite: Boolean = false
 )

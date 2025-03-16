@@ -12,12 +12,27 @@ class DataViewModel : ViewModel() {
     private val _events = MutableLiveData<List<Event>>()
     val events: LiveData<List<Event>> = _events
 
+    val _favorites = MutableLiveData<List<Event>>()
+    val favorites: LiveData<List<Event>> = _favorites
+
     // Method to fetch the event list asynchronously using coroutines
     fun fetchEvents() {
         CoroutineScope(Dispatchers.IO).launch {
             val generatedEvents = generateMockEvents()
             _events.postValue(generatedEvents)
         }
+
+        generateFavoriteEvents(generateMockEvents())
+    }
+
+    // Generates 3 random favorite-events
+    private fun generateFavoriteEvents(eventList: List<Event>) {
+        val favoriteSample = eventList.shuffled().take(3)
+        _favorites.postValue(favoriteSample)
+    }
+
+    fun updateFavorites(updatedFavorites: List<Event>) {
+        _favorites.value = updatedFavorites
     }
 
     private fun generateMockEvents(): List<Event> {
