@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import dk.itu.moapd.copenhagenbuzz.frnw.adapter.EventAdapter
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentTimelineBinding
@@ -32,7 +33,7 @@ class TimelineFragment : Fragment() {
         }
 
     // Initialize the ViewModel using viewModels(
-    private val dataViewModel: DataViewModel by viewModels()
+    private val dataViewModel: DataViewModel by activityViewModels()
 
 
     override fun onCreateView(

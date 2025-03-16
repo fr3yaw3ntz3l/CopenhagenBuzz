@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import com.github.javafaker.Faker
 
 class DataViewModel : ViewModel() {
+    private var isEventsGenerated = false
+
     private val _events = MutableLiveData<List<Event>>()
     val events: LiveData<List<Event>> = _events
 
@@ -17,13 +19,19 @@ class DataViewModel : ViewModel() {
 
     // Method to fetch the event list asynchronously using coroutines
     fun fetchEvents() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val generatedEvents = generateMockEvents()
-            _events.postValue(generatedEvents)
-        }
+        if (!isEventsGenerated) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val generatedEvents = generateMockEvents()
+                _events.postValue(generatedEvents) // Post events to LiveData
 
-        generateFavoriteEvents(generateMockEvents())
+                val favoriteSample = generatedEvents.shuffled().take(3) // Generate favorites
+                _favorites.postValue(favoriteSample)
+
+                isEventsGenerated = true // Flag to prevent regeneration
+            }
+        }
     }
+
 
     // Generates 3 random favorite-events
     private fun generateFavoriteEvents(eventList: List<Event>) {

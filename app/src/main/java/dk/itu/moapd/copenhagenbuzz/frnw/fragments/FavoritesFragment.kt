@@ -1,14 +1,20 @@
 package dk.itu.moapd.copenhagenbuzz.frnw.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import dk.itu.moapd.copenhagenbuzz.frnw.R
+import dk.itu.moapd.copenhagenbuzz.frnw.adapter.FavoriteAdapter
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentFavoritesBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentTimelineBinding
+import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +33,8 @@ class FavoritesFragment : Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
+    private val dataViewModel: DataViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +44,17 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Observe LiveData for favorite events
+        dataViewModel.favorites.observe(viewLifecycleOwner) { favorites ->
+            Log.d("FavoritesFragment", "Favorites count: ${favorites.size}, Content: $favorites")
+            val adapter = FavoriteAdapter(favorites)
+            recyclerView.adapter = adapter
+        }
+
     }
 
     override fun onDestroyView() {
