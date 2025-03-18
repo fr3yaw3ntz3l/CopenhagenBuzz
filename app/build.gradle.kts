@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
-    id("com.android.application")
     id("com.google.gms.google-services")
 }
 
@@ -57,6 +56,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.picasso)
-    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.ui.auth)  // For Firebase Authentication UI
 
+    // Google services for maps and other features
+    implementation(libs.play.services.maps.v1802)
+
+    // Google Sign-In for Firebase Authentication
+    implementation(libs.play.services.auth)
 }
