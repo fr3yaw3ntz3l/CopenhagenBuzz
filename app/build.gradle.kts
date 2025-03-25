@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.javafaker)
     implementation(libs.junit)
+    implementation(libs.firebase.auth.ktx)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.picasso)

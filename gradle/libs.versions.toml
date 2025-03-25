@@ -17,6 +17,7 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesAuth = "21.3.0"
 playServicesMaps = "18.1.0"
 playServicesMapsVersion = "18.0.2"
+firebaseAuthKtx = "23.2.0"
 
 [libraries]
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -37,6 +38,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
