@@ -12,7 +12,36 @@
           "package_name": "dk.itu.moapd.copenhagenbuzz.frnw"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "229441117858-acatl6tp6p9c6msmhi90m5stb9v8i6n9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.copenhagenbuzz.frnw",
+            "certificate_hash": "14fb1dc02c6184dcdbca5c639c79f362aa4b6377"
+          }
+        },
+        {
+          "client_id": "229441117858-e2upa23fu4vd7oomv9s4hkp88gvcsv09.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.copenhagenbuzz.frnw",
+            "certificate_hash": "774c7e0236c686c42fc78aa69deda44d07ea8d49"
+          }
+        },
+        {
+          "client_id": "229441117858-efntg2rm9qrs0f8b3d4cts8kfslh71fp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.copenhagenbuzz.frnw",
+            "certificate_hash": "590560c9b74bda30178637aa82365a74ca8609b1"
+          }
+        },
+        {
+          "client_id": "229441117858-4n7f0uu0qqjii39a8o7g5lp02cvltu4k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAEUYp--9FvjM2dBeMO7nfUOrlBbZ0kq2o"
@@ -20,7 +49,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229441117858-4n7f0uu0qqjii39a8o7g5lp02cvltu4k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

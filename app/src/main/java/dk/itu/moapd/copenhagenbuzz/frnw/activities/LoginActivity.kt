@@ -53,6 +53,12 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupUI()
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+
     }
 
     private fun setupUI() {

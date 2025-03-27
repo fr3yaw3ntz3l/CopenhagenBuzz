@@ -20,6 +20,8 @@ import android.content.Intent
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
 
 
 /**
@@ -68,8 +70,8 @@ class MainActivity : AppCompatActivity() {
         // Retrieve login status
         isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
 
-
         binding.contentMain.bottomNavigation.setupWithNavController(navController)
+
 
     }
 
@@ -92,11 +94,13 @@ class MainActivity : AppCompatActivity() {
             R.id.action_login_logout -> {
                 if (isLoggedIn) {
                     isLoggedIn = false
-                    val intent = Intent(this, LoginActivity::class.java).apply {
-                        putExtra("isLoggedIn", isLoggedIn)
+                    FirebaseAuth.getInstance().signOut()
+                    AuthUI.getInstance().signOut(this).addOnCompleteListener {
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
-                    startActivity(intent)
-                    finish()
+
                 } else {
                     val intent = Intent(this, LoginActivity::class.java).apply {
                         putExtra("isLoggedIn", isLoggedIn)

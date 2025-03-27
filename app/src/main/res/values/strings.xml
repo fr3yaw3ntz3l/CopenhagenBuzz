@@ -6,8 +6,8 @@
     <string name="event_type">Event type</string>
     <string name="event_description">Event description</string>
     <string name="button_description">Add event button</string>
-    <string name="login_button">Login</string>
-    <string name="guest_button">Guest</string>
+    <string name="login_button">Sign in with email</string>
+    <string name="guest_button">Sign in as guest</string>
     <string name="login">Login</string>"
 
     <!-- Event type drop down -->
@@ -27,4 +27,5 @@
     <string name="event_image">Event image</string>
     <string name="add_Event">Add event</string>
     <string name="favorite_icon">Favorite icon</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
 </resources>
