@@ -63,7 +63,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupUI() {
         binding.loginButton.setOnClickListener {
-            startSignIn()
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("isLoggedIn", true)
+            }
+            startActivity(intent)
+            finish()
         }
 
         binding.guestButton.setOnClickListener {
@@ -72,6 +76,10 @@ class LoginActivity : AppCompatActivity() {
             }
             startActivity(intent)
             finish()
+        }
+
+        binding.loginGoogleButton.setOnClickListener {
+            startSignIn()
         }
     }
 
