@@ -22,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import dk.itu.moapd.copenhagenbuzz.frnw.fragments.UserInfoDialogFragment
 
 
 /**
@@ -33,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityMainBinding
 
     // A set of private constants used in this class.
@@ -58,10 +60,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
         // Find NavHostFragment and NavController
         val navHostFragment =
             supportFragmentManager.findFragmentById(
-                R.id.fragment_container_view) as NavHostFragment
+                R.id.fragment_container_view
+            ) as NavHostFragment
         val navController = navHostFragment.navController
 
         // Set up the toolbar
@@ -75,13 +81,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    /**
-     *
-     */
+    override fun onStart() {
+        super.onStart()
+
+        // Redirect the user to the LoginActivity
+        // if they are not logged in.
+        auth.currentUser ?: startLoginActivity()
+    }
+
+    private fun startLoginActivity() {
+        // Make sure the package path is correct
+        Intent(this, dk.itu.moapd.firebaseauthentication.LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }.let(::startActivity)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.top_app_bar_menu, menu)
-        updateMenuIcon(menu)
         return true
     }
 
@@ -89,44 +106,28 @@ class MainActivity : AppCompatActivity() {
      *
      */
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_login_logout -> {
-                if (isLoggedIn) {
-                    isLoggedIn = false
-                    FirebaseAuth.getInstance().signOut()
-                    AuthUI.getInstance().signOut(this).addOnCompleteListener {
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-
-                } else {
-                    val intent = Intent(this, LoginActivity::class.java).apply {
-                        putExtra("isLoggedIn", isLoggedIn)
-                    }
-                    startActivity(intent)
-                    finish()
-                }
-                true
+    override fun onOptionsItemSelected(item: MenuItem):
+        Boolean = when (item.itemId) {
+        // Handle top app bar menu item clicks.
+        R.id.action_user_info -> {
+            UserInfoDialogFragment<Any>().apply {
+                isCancelable = false
+            }.also { dialogFragment ->
+                dialogFragment.show(
+                    supportFragmentManager,
+                    "UserInfoDialogFragment"
+                )
             }
-            else -> super.onOptionsItemSelected(item)
+            true
         }
-    }
 
-    /**
-     *
-     */
-
-    private fun updateMenuIcon(menu: Menu) {
-        val menuItem = menu.findItem(R.id.action_login_logout)
-        if (isLoggedIn) {
-            menuItem.title = "Logout"
-            menuItem.icon = AppCompatResources.getDrawable(this, R.drawable.baseline_logout_24)
-        } else {
-            menuItem.title = "Login"
-            menuItem.icon = AppCompatResources.getDrawable(this, R.drawable.baseline_account_circle_24)
+        R.id.action_logout -> {
+            auth.signOut()
+            startLoginActivity()
+            true
         }
+
+        else -> super.onOptionsItemSelected(item)
     }
 }
 

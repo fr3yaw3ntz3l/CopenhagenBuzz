@@ -66,4 +66,11 @@ dependencies {
 
     // Google Sign-In for Firebase Authentication
     implementation(libs.play.services.auth)
+
+    // Import the BoM for the Firebase platform
+    implementation(platform(libs.firebase.bom.v33110))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(libs.google.firebase.auth)
 }

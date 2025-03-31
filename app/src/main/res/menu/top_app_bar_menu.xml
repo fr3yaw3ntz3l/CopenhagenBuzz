@@ -2,10 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Menu item for Login/Logout -->
     <item
-        android:id="@+id/action_login_logout"
-        android:icon="@drawable/baseline_account_circle_24"
-        android:title="@string/login"
-        app:showAsAction="always" />
+        android:id="@+id/action_user_info"
+        android:orderInCategory="100"
+        android:title="@string/user_info_title"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="100"
+        android:title="@string/action_logout"
+        app:showAsAction="never" />
 </menu>
