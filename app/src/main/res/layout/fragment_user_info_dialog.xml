@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/amaranth_purple"
     android:padding="16dp">
 
-    <!-- User Photo -->
     <ImageView
-        android:id="@+id/image_view_photo"
-        android:layout_height="25dp"
-        android:layout_width="25dp"
-        tools:ignore="MissingConstraints" />
+        android:id="@+id/imageViewPhoto"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/baseline_account_circle_24"
+        android:contentDescription="@string/user_photo" />
 
-    <!-- User Name -->
     <TextView
-        android:id="@+id/text_view_name"
-        android:layout_height="25dp"
-        android:layout_width="25dp"
-        tools:ignore="MissingConstraints"/>
+        android:id="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:paddingTop="8dp"
+        android:text="@string/user_name" />
 
-    <!-- User Email -->
     <TextView
-        android:id="@+id/text_view_email"
-        android:layout_height="25dp"
-        android:layout_width="25dp"
-        tools:ignore="MissingConstraints"/>
+        android:id="@+id/textViewEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:paddingBottom="8dp"
+        android:text="@string/user_email" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

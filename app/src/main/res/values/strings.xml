@@ -31,4 +31,12 @@
     <string name="user_info_title">User info</string>
     <string name="action_logout">Logout</string>
     <string name="ok">OK</string>
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+    <string name="account">Account</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="user_name">User Name</string>
+    <string name="user_email">user@example.com</string>
+    <string name="user_photo">User photo</string>
 </resources>
