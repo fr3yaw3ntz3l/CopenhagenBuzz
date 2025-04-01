@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Defines the navigation drawer menu items for the application.
+    This menu is used in the NavigationView within the DrawerLayout.
+-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <!-- Grouping items to allow single selection -->
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_profile"
