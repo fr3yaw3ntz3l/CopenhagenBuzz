@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 
 /**
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     private var isLoggedIn: Boolean = false
 
+    private lateinit var database: FirebaseDatabase
+
 
     /**
      * Called when the activity is first created.
@@ -56,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
+
+        // Initialize Firebase Database using the global variable
+        database = FirebaseDatabase.getInstance(MyApplication.DATABASE_URL)
 
         // Set up the top app bar
         setSupportActionBar(binding.topAppBar)

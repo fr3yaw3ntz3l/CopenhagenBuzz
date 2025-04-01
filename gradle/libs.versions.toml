@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.0"
+dotenvKotlin = "6.4.1"
 firebaseBom = "33.11.0"
 firebaseBomVersion = "33.10.0"
 firebaseUiAuth = "8.0.0"
@@ -19,8 +20,10 @@ playServicesAuth = "20.7.0"
 playServicesMaps = "18.1.0"
 playServicesMapsVersion = "18.0.2"
 firebaseAuthKtx = "23.2.0"
+firebaseDatabaseKtx = "21.0.0"
 
 [libraries]
+dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenvKotlin" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom-v33110 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseUiAuth" }
@@ -42,6 +45,7 @@ play-services-auth = { module = "com.google.android.gms:play-services-auth", ver
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 
 
 [plugins]
