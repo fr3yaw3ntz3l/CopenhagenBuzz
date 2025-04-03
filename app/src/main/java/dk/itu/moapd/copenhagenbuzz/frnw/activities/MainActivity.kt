@@ -42,6 +42,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var database: FirebaseDatabase
 
+    // Auth state listener to detect authentication changes
+    private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+        // Update isLoggedIn flag based on current auth state
+        isLoggedIn = firebaseAuth.currentUser != null
+
+        // Update UI elements
+        updateNavHeader()
+        updateBottomNavigationVisibility()
+    }
 
     /**
      * Called when the activity is first created.
@@ -160,9 +169,19 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        // Redirect the user to the LoginActivity
-        // if they are not logged in.
-        auth.currentUser ?: startLoginActivity()
+        // Check if user is logged in
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            // Not logged in, redirect to login activity
+            startLoginActivity()
+        } else {
+            // User is logged in, update the flag
+            isLoggedIn = true
+
+            // Update UI elements
+            updateNavHeader()
+            updateBottomNavigationVisibility()
+        }
     }
 
 
@@ -200,5 +219,21 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    private fun updateBottomNavigationVisibility() {
+        val bottomNav = binding.contentMain.bottomNavigation
+        val menu = bottomNav.menu
+
+        // Get the add event menu item
+        val addEventItem = menu.findItem(R.id.fab_add_event)
+
+        // Check if user is fully authenticated based on our isLoggedIn flag
+        // and that they're not an anonymous user
+        val user = auth.currentUser
+        val isFullyAuthenticated = isLoggedIn && user != null && !user.isAnonymous
+
+        // Set visibility based on authentication status
+        addEventItem?.isVisible = isFullyAuthenticated
     }
 }
