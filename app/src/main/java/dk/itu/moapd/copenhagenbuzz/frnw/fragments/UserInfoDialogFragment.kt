@@ -18,33 +18,16 @@ import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentUserInfoDialogBindin
  * A dialog fragment that displays the current user's information.
  * This includes their name, email, and profile picture (if available).
  */
-class UserInfoDialogFragment<FragmentManager> : DialogFragment() {
+class UserInfoDialogFragment : DialogFragment()  {
 
     // View binding for accessing UI elements
     private var _binding: FragmentUserInfoDialogBinding? = null
 
     // Ensures that _binding is not null when accessed
     private val binding
-        get() = requireNotNull(_binding) {
-            "Cannot access binding because it is null. Is the view visible?"
-        }
-
-
-    /**
-     * Inflates the layout and initializes view binding.
-     *
-     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
-     * @param container The parent view that the fragment's UI should be attached to.
-     * @param savedInstanceState Saved state for restoring the fragment.
-     * @return The root view of the fragment.
-     */
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = FragmentUserInfoDialogBinding.inflate(inflater, container, false).also {
-        _binding = it
-    }.root
-
+        get() = _binding ?: throw IllegalStateException(
+            "Binding only available between onCreateView and onDestroyView"
+        )
 
     /**
      * Creates the dialog displaying user information.
@@ -52,13 +35,12 @@ class UserInfoDialogFragment<FragmentManager> : DialogFragment() {
      * @param savedInstanceState Saved instance state for restoring dialog state.
      * @return A new MaterialAlertDialog containing the user information.
      */
-    override fun onCreateDialog(
-        savedInstanceState: Bundle?
-    ): Dialog {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Inflate the binding here first before accessing it
+        _binding = FragmentUserInfoDialogBinding.inflate(layoutInflater, null, false)
 
         // Get the current Firebase user.
-        val currentUser =
-            FirebaseAuth.getInstance().currentUser
+        val currentUser = FirebaseAuth.getInstance().currentUser
 
         // Populate the dialog view with user information.
         currentUser?.let { user ->
@@ -82,6 +64,18 @@ class UserInfoDialogFragment<FragmentManager> : DialogFragment() {
                 dialog.dismiss()
             }
             .create()
+    }
+
+    /**
+     * We don't need this method because we're inflating the view in onCreateDialog,
+     * but we can keep it if you have other initialization needs
+     */
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // View already created in onCreateDialog, no need to inflate again
+        return binding.root
     }
 
     /**

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "229441117858",
+    "firebase_url": "https://copenhagenbuzz-frnw-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "copenhagenbuzz-frnw",
     "storage_bucket": "copenhagenbuzz-frnw.firebasestorage.app"
   },
@@ -44,7 +45,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAEUYp--9FvjM2dBeMO7nfUOrlBbZ0kq2o"
+          "current_key": "AIzaSyAY0PMdt5yRGKdM1oZrUwwPMDaDn8FVZyA"
         }
       ],
       "services": {

@@ -62,6 +62,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+
         when (result.resultCode) {
             RESULT_OK -> {
                 // Successfully signed in
@@ -69,15 +71,24 @@ class LoginActivity : AppCompatActivity() {
                 if (user?.isAnonymous == true) {
                     showSnackbar("Signed in as guest.")
                 } else {
-                    showSnackbar("User logged in the app.")
+                    showSnackbar("User logged in with email: ${user?.email}")
                 }
                 startMainActivity()
             }
             else -> {
                 // Sign in failed
-                showSnackbar("Sign in failed.")
-                // Try again
-                createSignInIntent()
+                val errorMessage = if (response == null) {
+                    "Sign in canceled."
+                } else {
+                    "Sign in failed: ${response.error?.message} (Code: ${response.error?.errorCode})"
+                }
+
+                showSnackbar(errorMessage)
+
+                // Try again, but only if it wasn't a user cancelling the sign-in
+                if (response != null) {
+                    createSignInIntent()
+                }
             }
         }
     }
