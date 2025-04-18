@@ -21,8 +21,10 @@ playServicesMaps = "18.1.0"
 playServicesMapsVersion = "18.0.2"
 firebaseAuthKtx = "23.2.0"
 firebaseDatabaseKtx = "21.0.0"
+firebase-ui-database = "8.0.2"
 
 [libraries]
+firebase-ui-database = { group = "com.firebaseui", name = "firebase-ui-database", version.ref = "firebase-ui-database" }
 dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenvKotlin" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom-v33110 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

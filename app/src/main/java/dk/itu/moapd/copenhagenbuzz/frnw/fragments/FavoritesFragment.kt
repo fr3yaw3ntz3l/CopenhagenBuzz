@@ -7,25 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import dk.itu.moapd.copenhagenbuzz.frnw.R
+import dk.itu.moapd.copenhagenbuzz.frnw.activities.MyApplication
 import dk.itu.moapd.copenhagenbuzz.frnw.adapter.FavoriteAdapter
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentFavoritesBinding
-import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentTimelineBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
+import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FavoritesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding
@@ -34,6 +26,8 @@ class FavoritesFragment : Fragment() {
         }
 
     private val dataViewModel: DataViewModel by activityViewModels()
+    private lateinit var favoriteAdapter: FavoriteAdapter
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,16 +39,66 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = binding.recyclerView
+        // Set up the RecyclerView with a LinearLayoutManager
+        val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Observe LiveData for favorite events
-        dataViewModel.favorites.observe(viewLifecycleOwner) { favorites ->
-            Log.d("FavoritesFragment", "Favorites count: ${favorites.size}, Content: $favorites")
-            val adapter = FavoriteAdapter(favorites)
-            recyclerView.adapter = adapter
-        }
+        // Set up the Firebase adapter for favorites
+        setupFirebaseAdapter(recyclerView)
 
+        // Observe favorites LiveData for UI updates
+        dataViewModel.favorites.observe(viewLifecycleOwner) { favorites ->
+            Log.d("FavoritesFragment", "Favorites count: ${favorites.size}")
+        }
+    }
+
+    private fun setupFirebaseAdapter(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+        try {
+            // Get database reference
+            val database = FirebaseDatabase.getInstance(MyApplication.DATABASE_URL)
+
+            // Create query to get only favorite events ordered by date
+            val favoritesQuery = database.reference.child("events")
+                .orderByChild("isFavorite")
+                .equalTo(true)
+
+            // Create FirebaseRecyclerOptions
+            val options = FirebaseRecyclerOptions.Builder<Event>()
+                .setQuery(favoritesQuery) { snapshot ->
+                    // Convert snapshot to Event object
+                    val event = snapshot.getValue(Event::class.java)
+
+                    // Make sure id is set from the snapshot key
+                    event?.id = snapshot.key ?: ""
+
+                    event!!
+                }
+                .build()
+
+            // Create and set the adapter
+            favoriteAdapter = FavoriteAdapter(options, dataViewModel)
+            recyclerView.adapter = favoriteAdapter
+
+            Log.d("FavoritesFragment", "Firebase adapter setup complete")
+        } catch (e: Exception) {
+            Log.e("FavoritesFragment", "Error setting up Firebase adapter", e)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Start listening for database changes
+        if (::favoriteAdapter.isInitialized) {
+            favoriteAdapter.startListening()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Stop listening for database changes
+        if (::favoriteAdapter.isInitialized) {
+            favoriteAdapter.stopListening()
+        }
     }
 
     override fun onDestroyView() {

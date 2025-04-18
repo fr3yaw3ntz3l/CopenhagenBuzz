@@ -39,4 +39,15 @@
     <string name="user_name">User Name</string>
     <string name="user_email">user@example.com</string>
     <string name="user_photo">User photo</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="delete_event">Delete Event</string>
+    <string name="cancel">Cancel</string>
+    <string name="update_event">Update Event</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="created_by">Created by</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="date_label">Date label</string>
+    <string name="description_label">Description label</string>
+    <string name="close">Close</string>
+    <string name="location_label">Location label</string>
 </resources>

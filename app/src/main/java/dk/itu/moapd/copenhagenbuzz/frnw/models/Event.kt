@@ -25,11 +25,15 @@ package dk.itu.moapd.copenhagenbuzz.frnw.models
  */
 
 data class Event(
-    val eventName: String,
-    var eventLocation: String,
-    var eventDate: String,
-    val eventType: String,
-    var eventDescription: String,
-    var eventPhotoUrl: String,
+    var id: String = "",
+    var userId: String = "",
+    val eventName: String = "",
+    var eventLocation: String = "",
+    var eventDate: String = "",
+    val eventType: String = "",
+    var eventDescription: String = "",
+    var eventPhotoUrl: String = "",
     var isFavorite: Boolean = false
-)
+) {
+    constructor() : this("", "", "", "", "", "", "", "", false)
+}

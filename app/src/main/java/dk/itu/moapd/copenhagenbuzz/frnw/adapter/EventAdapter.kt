@@ -1,97 +1,100 @@
 package dk.itu.moapd.copenhagenbuzz.frnw.adapter
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import dk.itu.moapd.copenhagenbuzz.frnw.R
-import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
+import androidx.fragment.app.FragmentManager
+import com.firebase.ui.database.FirebaseListAdapter
+import com.firebase.ui.database.FirebaseListOptions
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import dk.itu.moapd.copenhagenbuzz.frnw.R
+import dk.itu.moapd.copenhagenbuzz.frnw.fragments.EditEventDialogFragment
 import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
+import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
 
-
+/**
+ * Adapter for displaying events from Firebase in a ListView.
+ * Supports favoriting and editing events.
+ */
 class EventAdapter(
-
+    options: FirebaseListOptions<Event>,
     private val context: Context,
-    private val events: ArrayList<Event>,
-    private val dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel,
+    private val fragmentManager: FragmentManager
+) : FirebaseListAdapter<Event>(options) {
 
-) : BaseAdapter() {
+    private val auth = FirebaseAuth.getInstance()
 
-    // Inflater to inflate the list item layout
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
-
-    class ViewHolder(view: View) {
-
+    override fun populateView(view: View, event: Event, position: Int) {
+        // Get references to the views in the list item layout
         val eventName: TextView = view.findViewById(R.id.event_name)
         val eventType: TextView = view.findViewById(R.id.event_type)
         val eventLocation: TextView = view.findViewById(R.id.event_location)
         val eventDate: TextView = view.findViewById(R.id.event_date)
         val eventDescription: TextView = view.findViewById(R.id.event_description)
         val eventPhoto: ImageView = view.findViewById(R.id.event_photo)
-        //val circle: TextView = view.findViewById(R.id.circle_text)
         val favoriteIcon: ImageView = view.findViewById(R.id.favorite_icon)
-    }
 
-    override fun getCount(): Int = events.size
-
-    override fun getItem(position: Int): Event = events[position]
-
-    override fun getItemId(position: Int): Long = position.toLong()
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view: View
-        val viewHolder: ViewHolder
-
-        if (convertView == null) {
-            // Inflate the list item layout
-            view = inflater.inflate(R.layout.event_row_item, parent, false)
-            viewHolder = ViewHolder(view)
-            view.tag = viewHolder // Store ViewHolder in view's tag
-        } else {
-            // Reuse existing view and ViewHolder
-            view = convertView
-            viewHolder = view.tag as ViewHolder
-        }
-
-        // Get the event at the current position
-        val event = getItem(position)
+        // Get reference to buttons
+        val buttonEdit: MaterialButton = view.findViewById(R.id.button_edit)
+        val buttonInfo: MaterialButton = view.findViewById(R.id.button_info)
 
         // Bind the event data to the views
-        viewHolder.eventName.text = event.eventName
-        viewHolder.eventType.text = event.eventType
-        viewHolder.eventLocation.text = event.eventLocation
-        viewHolder.eventDate.text = event.eventDate
-        viewHolder.eventDescription.text = event.eventDescription
-        // viewHolder.circle.text = event.eventType.first().toString()
+        eventName.text = event.eventName
+        eventType.text = event.eventType
+        eventLocation.text = event.eventLocation
+        eventDate.text = event.eventDate
+        eventDescription.text = event.eventDescription
 
         // Use Picasso to load the event photo
         Picasso.get()
-            .load(event.eventPhotoUrl) // URL or resource ID of the photo
-            .placeholder(R.drawable.baseline_refresh_24) // Placeholder image while loading
-            .error(R.drawable.baseline_image_not_supported_24) // Error image if loading fails
-            .into(viewHolder.eventPhoto)
+            .load(event.eventPhotoUrl)
+            .placeholder(R.drawable.baseline_refresh_24)
+            .error(R.drawable.baseline_image_not_supported_24)
+            .into(eventPhoto)
 
-        val isFavorite = dataViewModel.favorites.value?.contains(event) == true
-        viewHolder.favoriteIcon.setImageResource(
-            if (isFavorite) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+        // Check if this event is in the favorites collection
+        val favorites = dataViewModel.favorites.value ?: emptyList()
+        val isFavorite = favorites.any { it.id == event.id }
+
+        // Set the appropriate favorite icon based on status
+        favoriteIcon.setImageResource(
+            if (isFavorite) R.drawable.baseline_favorite_24
+            else R.drawable.baseline_favorite_border_24
         )
 
-        viewHolder.favoriteIcon.setOnClickListener {
-            val updatedFavorites = dataViewModel.favorites.value?.toMutableList() ?: mutableListOf()
+        // Handle click on favorite icon
+        favoriteIcon.setOnClickListener {
             if (isFavorite) {
-                updatedFavorites.remove(event)
+                // Remove from favorites
+                dataViewModel.removeFromFavorites(event.id)
             } else {
-                updatedFavorites.add(event)
+                // Add to favorites
+                dataViewModel.addToFavorites(event)
             }
-            dataViewModel.updateFavorites(updatedFavorites)
         }
 
-        return view
+        // Check if user is the owner of the event
+        val isOwner = event.userId == auth.currentUser?.uid
+
+        // Show/hide edit button based on ownership
+        buttonEdit.visibility = if (isOwner) View.VISIBLE else View.GONE
+
+        // Set click listener for edit button
+        buttonEdit.setOnClickListener {
+            // Show edit event dialog
+            val dialog = EditEventDialogFragment.newInstance(event.id)
+            dialog.show(fragmentManager, "EditEventDialog")
+        }
+
+        // The info button doesn't need to do anything special since all info is already visible
+        // You could remove this button or use it for some other functionality
+        buttonInfo.setOnClickListener {
+            // Maybe expand the card to show more details, or toggle visibility of some elements
+            // For now, this is a no-op
+        }
     }
 }
