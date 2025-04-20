@@ -8,16 +8,22 @@ import androidx.core.view.WindowCompat
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.ActivityMainBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.R
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build.VERSION_CODES.R
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import java.util.jar.Manifest
 
 /**
  * MainActivity serves as the entry point of the application after user authentication.
@@ -41,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     private var isLoggedIn: Boolean = false
 
     private lateinit var database: FirebaseDatabase
+
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     // Auth state listener to detect authentication changes
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
@@ -100,6 +108,8 @@ class MainActivity : AppCompatActivity() {
         // Retrieve login status
         isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
 
+        requestLocationPermission()
+
         // Update navigation drawer header with user information
         updateNavHeader()
 
@@ -111,16 +121,19 @@ class MainActivity : AppCompatActivity() {
                     // You could add specific profile functionality here
                     true
                 }
+
                 R.id.nav_settings -> {
                     // Handle settings action
                     // You could add specific settings functionality here
                     true
                 }
+
                 R.id.nav_logout -> {
                     auth.signOut()
                     startLoginActivity()
                     true
                 }
+
                 else -> false
             }
 
@@ -235,5 +248,39 @@ class MainActivity : AppCompatActivity() {
 
         // Set visibility based on authentication status
         addEventItem?.isVisible = isFullyAuthenticated
+    }
+
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+            } else {
+                // Permission denied
+                Snackbar.make(
+                    binding.root,
+                    "Location permission denied. This feature will not work.",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }
