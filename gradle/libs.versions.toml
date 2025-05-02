@@ -22,6 +22,7 @@ playServicesMapsVersion = "18.0.2"
 firebaseAuthKtx = "23.2.0"
 firebaseDatabaseKtx = "21.0.0"
 firebase-ui-database = "8.0.2"
+playServicesLocation = "21.3.0"
 
 [libraries]
 firebase-ui-database = { group = "com.firebaseui", name = "firebase-ui-database", version.ref = "firebase-ui-database" }
@@ -48,6 +49,7 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]

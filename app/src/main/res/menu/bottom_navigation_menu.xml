@@ -24,4 +24,10 @@
         android:enabled="true"
         android:icon="@drawable/baseline_map_24"
         android:title="@string/map"/>
+
+    <item
+        android:id="@+id/fragment_calendar"
+        android:enabled="true"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="@string/calendar"/>
 </menu>

@@ -1,6 +1,9 @@
 package dk.itu.moapd.copenhagenbuzz.frnw.fragments
 
+import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +15,8 @@ import com.google.firebase.database.FirebaseDatabase
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentAddEventBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
 import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
+import dk.itu.moapd.copenhagenbuzz.frnw.models.EventLocation
+import java.util.Locale
 
 class AddEventFragment : Fragment() {
     private var _binding: FragmentAddEventBinding? = null
@@ -44,11 +49,16 @@ class AddEventFragment : Fragment() {
 
                     if (newEventKey != null) {
                         // Create event object with the generated key
+                        val addressString = editTextEventLocation.text.toString()
                         val event = Event(
                             id = newEventKey,
                             userId = auth.currentUser?.uid ?: "",
                             eventName = editTextEventName.text.toString(),
-                            eventLocation = editTextEventLocation.text.toString(),
+                            eventLocation = EventLocation(
+                                latitude = 0.0, // This will be updated with geocoding
+                                longitude = 0.0, // This will be updated with geocoding
+                                address = addressString
+                            ),
                             eventDate = editTextEventDate.text.toString(),
                             eventType = editTextEventType.text.toString(),
                             eventDescription = editTextEventDescription.text.toString(),
@@ -103,6 +113,45 @@ class AddEventFragment : Fragment() {
             editTextEventDate.text?.clear()
             editTextEventType.text?.clear()
             editTextEventDescription.text?.clear()
+        }
+    }
+
+    private fun geocodeAddress(address: String, onComplete: (EventLocation?) -> Unit) {
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // For Android 13+
+                geocoder.getFromLocationName(address, 1) { addresses ->
+                    if (addresses.isNotEmpty()) {
+                        val location = addresses[0]
+                        onComplete(EventLocation(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            address = address
+                        ))
+                    } else {
+                        onComplete(null)
+                    }
+                }
+            } else {
+                // For Android 12 and below
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocationName(address, 1)
+                if (addresses != null && addresses.isNotEmpty()) {
+                    val location = addresses[0]
+                    onComplete(EventLocation(
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        address = address
+                    ))
+                } else {
+                    onComplete(null)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AddEventFragment", "Geocoding error", e)
+            onComplete(null)
         }
     }
 

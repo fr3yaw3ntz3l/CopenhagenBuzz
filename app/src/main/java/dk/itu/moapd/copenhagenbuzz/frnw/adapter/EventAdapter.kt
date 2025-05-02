@@ -45,7 +45,7 @@ class EventAdapter(
         // Bind the event data to the views
         eventName.text = event.eventName
         eventType.text = event.eventType
-        eventLocation.text = event.eventLocation
+        eventLocation.text = event.eventLocation.address
         eventDate.text = event.eventDate
         eventDescription.text = event.eventDescription
 

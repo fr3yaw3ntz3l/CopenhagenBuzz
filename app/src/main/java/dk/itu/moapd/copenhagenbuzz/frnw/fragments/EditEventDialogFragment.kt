@@ -14,6 +14,7 @@ import dk.itu.moapd.copenhagenbuzz.frnw.R
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentEditEventDialogBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
 import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
+import dk.itu.moapd.copenhagenbuzz.frnw.models.EventLocation
 import dk.itu.moapd.copenhagenbuzz.frnw.models.OperationStatus
 
 /**
@@ -108,7 +109,7 @@ class EditEventDialogFragment : DialogFragment() {
     private fun populateFormWithEventData() {
         with(binding) {
             editTextEventName.setText(currentEvent.eventName)
-            editTextEventLocation.setText(currentEvent.eventLocation)
+            editTextEventLocation.setText(currentEvent.eventLocation.address)
             editTextEventDate.setText(currentEvent.eventDate)
             editTextEventType.setText(currentEvent.eventType)
             editTextEventDescription.setText(currentEvent.eventDescription)
@@ -175,8 +176,11 @@ class EditEventDialogFragment : DialogFragment() {
         // Update event with form data
         val updatedEvent = currentEvent.copy(
             eventName = binding.editTextEventName.text.toString(),
-            eventLocation = binding.editTextEventLocation.text.toString(),
-            eventDate = binding.editTextEventDate.text.toString(),
+            eventLocation = EventLocation(
+                latitude = currentEvent.eventLocation.latitude,
+                longitude = currentEvent.eventLocation.longitude,
+                address = binding.editTextEventLocation.text.toString()
+            ),            eventDate = binding.editTextEventDate.text.toString(),
             eventType = binding.editTextEventType.text.toString(),
             eventDescription = binding.editTextEventDescription.text.toString()
         )
