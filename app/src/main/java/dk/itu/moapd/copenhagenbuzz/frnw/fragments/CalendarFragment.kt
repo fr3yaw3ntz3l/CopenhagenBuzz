@@ -129,7 +129,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
             // Filter events for the current month being displayed
             val eventsInMonth = events.filter { event: Event ->
                 val eventDate = event.getStartDateCalendar()
-                eventDate?.let { date: Calendar ->
+                eventDate?.let { date: java.util.Calendar ->
                     EventDateUtil.isInMonth(date, currentMonth, currentYear)
                 } ?: false
             }
@@ -137,7 +137,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
             // Group events by day of month
             eventsInMonth.forEach { event: Event ->
                 val eventDate = event.getStartDateCalendar()
-                eventDate?.let { date: Calendar ->
+                eventDate?.let { date: java.util.Calendar ->
                     val dayOfMonth = EventDateUtil.getDayOfMonth(date)
                     val eventsForDay = currentMonthEvents[dayOfMonth] ?: emptyList()
                     currentMonthEvents[dayOfMonth] = eventsForDay + event

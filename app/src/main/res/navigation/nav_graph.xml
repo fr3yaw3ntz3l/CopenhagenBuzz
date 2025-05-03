@@ -81,4 +81,23 @@
             android:id="@+id/action_fragment_add_event_to_fragment_calendar"
             app:destination="@id/fragment_calendar" />
     </fragment>
+    <fragment
+        android:id="@+id/fragment_calendar"
+        android:name="dk.itu.moapd.copenhagenbuzz.frnw.fragments.CalendarFragment"
+        android:label="@string/calendar"
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_fragment_calendar_to_fragment_timeline"
+            app:destination="@id/fragment_timeline" />
+        <action
+            android:id="@+id/action_fragment_calendar_to_fragment_favorites"
+            app:destination="@id/fragment_favorites" />
+        <action
+            android:id="@+id/action_fragment_calendar_to_fragment_map"
+            app:destination="@id/fragment_map" />
+        <action
+            android:id="@+id/action_fragment_calendar_to_fragment_add_event"
+            app:destination="@id/fragment_add_event" />
+    </fragment>
+
 </navigation>

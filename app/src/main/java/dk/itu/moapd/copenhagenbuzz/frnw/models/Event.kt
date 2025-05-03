@@ -9,6 +9,7 @@
 
 package dk.itu.moapd.copenhagenbuzz.frnw.models
 
+import dk.itu.moapd.copenhagenbuzz.frnw.utils.EventDateUtil
 import java.util.Calendar
 
 /**

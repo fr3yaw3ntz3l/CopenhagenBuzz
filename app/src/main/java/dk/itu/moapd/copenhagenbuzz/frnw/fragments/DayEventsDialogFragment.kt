@@ -5,12 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.squareup.picasso.Picasso
 import dk.itu.moapd.copenhagenbuzz.frnw.R
+import dk.itu.moapd.copenhagenbuzz.frnw.activities.MainActivity
+import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
 import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
 import dk.itu.moapd.copenhagenbuzz.frnw.utils.EventDateUtil
 import java.util.*
@@ -22,6 +28,8 @@ class DayEventsDialogFragment : DialogFragment() {
 
     private lateinit var events: List<Event>
     private lateinit var date: Calendar
+
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     companion object {
         private const val ARG_DAY = "day"
@@ -72,12 +80,8 @@ class DayEventsDialogFragment : DialogFragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.events_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Create and set the adapter
-        val adapter = EventListAdapter(eventIds) { eventId ->
-            // Show EventDetailsDialog when an event is clicked
-            val detailsDialog = EventDetailsDialogFragment.newInstance(eventId)
-            detailsDialog.show(parentFragmentManager, "EventDetailsDialog")
-        }
+        // Create and set the adapter (similar to EventAdapter)
+        val adapter = EventListAdapter(eventIds, dataViewModel, parentFragmentManager)
         recyclerView.adapter = adapter
 
         return MaterialAlertDialogBuilder(requireContext())
@@ -93,34 +97,69 @@ class DayEventsDialogFragment : DialogFragment() {
      */
     inner class EventListAdapter(
         private val eventIds: List<String>,
-        private val onEventClick: (String) -> Unit
+        private val dataViewModel: DataViewModel,
+        private val fragmentManager: FragmentManager
     ) : RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {
 
         inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val eventName: TextView = itemView.findViewById(R.id.text_event_name)
-            val eventType: TextView = itemView.findViewById(R.id.text_event_type)
-            val eventTime: TextView = itemView.findViewById(R.id.text_event_time)
+            val eventName: TextView = itemView.findViewById(R.id.event_name)
+            val eventType: TextView = itemView.findViewById(R.id.event_type)
+            val eventPhoto: ImageView = itemView.findViewById(R.id.event_photo)
+            val favoriteIcon: ImageView = itemView.findViewById(R.id.remove_favorite_btn)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.day_event_list_item, parent, false)
+                .inflate(R.layout.favorite_row_item, parent, false)
             return EventViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
             val eventId = eventIds[position]
-            val parentFragment = parentFragment as? CalendarFragment
-            val event = parentFragment?.getEventById(eventId)
+            val event = dataViewModel.events.value?.find { it.id == eventId }
 
-            event?.let {
-                holder.eventName.text = it.eventName
-                holder.eventType.text = it.eventType
-                holder.eventTime.text = it.eventDate
+            event?.let { currentEvent ->
+                // Set event information
+                holder.eventName.text = currentEvent.eventName
+                holder.eventType.text = currentEvent.eventType
 
-                // Set click listener
+                // Check if this event is in the favorites collection
+                val favorites = dataViewModel.favorites.value ?: emptyList()
+                val isFavorite = favorites.any { it.id == currentEvent.id }
+
+                // Set the appropriate favorite icon based on status
+                holder.favoriteIcon.setImageResource(
+                    if (isFavorite) R.drawable.baseline_favorite_24
+                    else R.drawable.baseline_favorite_border_24
+                )
+
+                // Load event image
+                if (currentEvent.eventPhotoUrl.isNotEmpty()) {
+                    Picasso.get()
+                        .load(currentEvent.eventPhotoUrl)
+                        .placeholder(R.drawable.baseline_refresh_24)
+                        .error(R.drawable.baseline_image_not_supported_24)
+                        .into(holder.eventPhoto)
+                } else {
+                    holder.eventPhoto.setImageResource(R.drawable.baseline_image_not_supported_24)
+                }
+
+                // Handle click on favorite icon
+                holder.favoriteIcon.setOnClickListener {
+                    if (isFavorite) {
+                        // Remove from favorites
+                        dataViewModel.removeFromFavorites(currentEvent.id)
+                    } else {
+                        // Add to favorites
+                        dataViewModel.addToFavorites(currentEvent)
+                    }
+                    notifyItemChanged(position) // Notify the adapter of the change
+                }
+
+                // Set item click listener
                 holder.itemView.setOnClickListener {
-                    onEventClick(eventId)
+                    val dialog = EventDetailsDialogFragment.newInstance(currentEvent.id)
+                    dialog.show(fragmentManager, "EventDetailsDialog")
                 }
             }
         }
