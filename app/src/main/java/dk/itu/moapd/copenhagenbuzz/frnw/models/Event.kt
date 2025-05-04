@@ -39,27 +39,4 @@ data class Event(
     var isFavorite: Boolean = false
 ) {
     constructor() : this("", "", "", EventLocation(), "", "", "", "", false)
-
-    /**
-     * Gets the event's start date as a Calendar object.
-     * Uses EventDateUtil to parse the date string.
-     *
-     * @return Calendar object or null if parsing fails
-     */
-    fun getStartDateCalendar() = EventDateUtil.parseDate(eventDate)
-
-    /**
-     * Checks if this event falls on the specified day within a month.
-     *
-     * @param day Day of month (1-31)
-     * @param month Month (0-11)
-     * @param year Year
-     * @return true if the event occurs on the specified day
-     */
-    fun isOnDay(day: Int, month: Int, year: Int): Boolean {
-        val calendar = getStartDateCalendar() ?: return false
-        return calendar.get(Calendar.DAY_OF_MONTH) == day &&
-                calendar.get(Calendar.MONTH) == month &&
-                calendar.get(Calendar.YEAR) == year
-    }
 }

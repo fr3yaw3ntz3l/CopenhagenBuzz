@@ -14,16 +14,22 @@ import dk.itu.moapd.copenhagenbuzz.frnw.adapter.CalendarAdapter
 import dk.itu.moapd.copenhagenbuzz.frnw.databinding.FragmentCalendarBinding
 import dk.itu.moapd.copenhagenbuzz.frnw.models.DataViewModel
 import dk.itu.moapd.copenhagenbuzz.frnw.models.Event
-import dk.itu.moapd.copenhagenbuzz.frnw.utils.EventDateUtil
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A [Fragment] displaying a month‑grid calendar, with events overlaid on each day.
+ *
+ * All date parsing and formatting is done in this fragment using a single,
+ * strict format “MMMM d, yyyy” (e.g. “May 4, 2025”). Any deviation will fail to parse.
+ *
+ * Implements [CalendarAdapter.OnDayClickListener] to open:
+ *  • [EventDetailsDialogFragment] for a single event
+ *  • [DayEventsDialogFragment] for multiple events on the same day
  */
 class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
+
     private val TAG = "CalendarFragment"
 
     private var _binding: FragmentCalendarBinding? = null
@@ -36,6 +42,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
     private lateinit var calendarAdapter: CalendarAdapter
     private val calendar = Calendar.getInstance()
     private var currentMonthEvents = mutableMapOf<Int, List<Event>>()
+
+    companion object {
+        /** The strict date format used throughout this fragment. */
+        private val STRICT_FORMAT = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).apply {
+            isLenient = false
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,16 +64,22 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
         setupCalenderGrid()
         setupNavigationButtons()
 
-        // Observe events data
+        // Recompute when the events list changes
         dataViewModel.events.observe(viewLifecycleOwner) { events: List<Event> ->
             updateEventsForCurrentMonth(events)
         }
     }
 
+    /**
+     * Initializes the calendar header text.
+     */
     private fun setupCalendarHeader() {
         updateMonthYearText()
     }
 
+    /**
+     * Sets up the RecyclerView grid and its adapter.
+     */
     private fun setupCalenderGrid() {
         val daysPerWeek = 7
         binding.calendarGrid.layoutManager = GridLayoutManager(requireContext(), daysPerWeek)
@@ -70,6 +89,9 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
         binding.calendarGrid.adapter = calendarAdapter
     }
 
+    /**
+     * Configures the “Previous” and “Next” month buttons.
+     */
     private fun setupNavigationButtons() {
         binding.prevMonthButton.setOnClickListener { _: View ->
             calendar.add(Calendar.MONTH, -1)
@@ -82,18 +104,32 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
         }
     }
 
+    /**
+     * Refreshes header and events when the month changes.
+     */
     private fun updateCalenderView() {
         updateMonthYearText()
         updateEventsForCurrentMonth(dataViewModel.events.value ?: emptyList())
         calendarAdapter.updateDays(getDaysInMonth(), currentMonthEvents)
     }
 
+    /**
+     * Updates the header text to “MMMM yyyy” (e.g. “May 2025”),
+     * by formatting the [calendar] month.
+     */
     private fun updateMonthYearText() {
         val dateFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
         val monthYearText = dateFormat.format(calendar.time)
         binding.calendarHeader.findViewById<TextView>(R.id.text_month_year).text = monthYearText
     }
 
+    /**
+     * Builds a list of day‑cell values:
+     *  • `0` for empty leading cells
+     *  • `1..maxDay` for each actual day
+     *
+     * @return List of Ints representing the grid cells.
+     */
     private fun getDaysInMonth(): List<Int> {
         val daysInMonth = mutableListOf<Int>()
 
@@ -118,44 +154,56 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
         return daysInMonth
     }
 
+    /**
+     * Filters the provided [events] to only those whose start date
+     * (parsed from their stored string) falls in the displayed month/year.
+     * Then groups them by day‑of‑month into [currentMonthEvents].
+     *
+     * @param events Full list of all events from the ViewModel.
+     */
     private fun updateEventsForCurrentMonth(events: List<Event>) {
-        try {
-            currentMonthEvents.clear()
+        currentMonthEvents.clear()
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
 
-            // Get current month and year from the calendar
-            val currentMonth = calendar.get(Calendar.MONTH)
-            val currentYear = calendar.get(Calendar.YEAR)
-
-            // Filter events for the current month being displayed
-            val eventsInMonth = events.filter { event: Event ->
-                val eventDate = event.getStartDateCalendar()
-                eventDate?.let { date: java.util.Calendar ->
-                    EventDateUtil.isInMonth(date, currentMonth, currentYear)
-                } ?: false
-            }
-
-            // Group events by day of month
-            eventsInMonth.forEach { event: Event ->
-                val eventDate = event.getStartDateCalendar()
-                eventDate?.let { date: java.util.Calendar ->
-                    val dayOfMonth = EventDateUtil.getDayOfMonth(date)
-                    val eventsForDay = currentMonthEvents[dayOfMonth] ?: emptyList()
-                    currentMonthEvents[dayOfMonth] = eventsForDay + event
+        // Keep only events in this month/year
+        events.filterNotNull().forEach { e ->
+            parseEventDate(e.eventDate)?.let { cal : Calendar ->
+                if (cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
+                    val day = cal.get(Calendar.DAY_OF_MONTH)
+                    val listForDay = currentMonthEvents[day].orEmpty()
+                    currentMonthEvents[day] = listForDay + e
                 }
             }
+        }
 
-            // Update the adapter with the new events
-            calendarAdapter.updateDays(getDaysInMonth(), currentMonthEvents)
+        calendarAdapter.updateDays(getDaysInMonth(), currentMonthEvents)
+    }
 
-        } catch (e: Exception) {
-            Log.e(TAG, "Error updating events for current month", e)
+    /**
+     * Parses a date string in “MMMM d, yyyy” format into a [Calendar].
+     *
+     * @param dateString e.g. “May 4, 2025”
+     * @return Calendar on success, or null if parsing failed.
+     */
+    private fun parseEventDate(dateString: String): Calendar? {
+        if (dateString.isBlank()) return null
+        return try {
+            val date = STRICT_FORMAT.parse(dateString)
+            Calendar.getInstance().apply { time = date!! }
+        } catch (e: ParseException) {
+            Log.e(TAG, "Unable to parse date: $dateString", e)
+            null
         }
     }
 
-    private fun parseEventDate(dateString: String): Calendar? {
-        return EventDateUtil.parseDate(dateString)
-    }
 
+    /**
+     * Called by [CalendarAdapter] when the user taps a day cell.
+     *
+     * @param day 1‑based day of month (or ≤0 for empty cells)
+     * @param events List of events on that day, if any
+     */
     override fun onDayClicked(day: Int, events: List<Event>?) {
         if (day <= 0 || events.isNullOrEmpty()) return
 
@@ -173,17 +221,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnDayClickListener {
             val dialog = DayEventsDialogFragment.newInstance(day, month, year, eventIds)
             dialog.show(parentFragmentManager, "DayEventsDialog")
         }
-    }
-
-    /**
-     * Gets an event by its ID.
-     * Used by the DayEventsDialogFragment to retrieve event details.
-     *
-     * @param eventId The ID of the event to retrieve
-     * @return The Event object, or null if not found
-     */
-    fun getEventById(eventId: String): Event? {
-        return dataViewModel.events.value?.find { event: Event -> event.id == eventId }
     }
 
     override fun onDestroyView() {
